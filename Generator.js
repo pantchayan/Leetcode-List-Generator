@@ -1,5 +1,6 @@
 let puppeteer = require("puppeteer");
 let fs = require("fs");
+let writeToExcel = require("./writeToExcel");
 
 let data = fs.readFileSync("./res/tags.txt");
 data = data + "";
@@ -25,6 +26,9 @@ console.log(tagArr);
 		   
 			await page.goto(link);
 			let questionsArr = await getQuestions(page, link, tag);
+			console.log(tag+" "+questionsArr.length);
+			console.table(questionsArr);
+			writeToExcel.writeData(questionsArr, "./res/questions.xlsx", tag);
 		}
 	}
 	catch (err){
@@ -35,14 +39,37 @@ console.log(tagArr);
 
 let getQuestions = async (page, link, tag) => {
 	// .header__2ZIe > p:nth-child(3) > strong
-	await page.waitForSelector(".header__2ZIe > p:nth-child(3) > strong", {visible:true});
-	let consoleFn = (tag) => {
-		let totalQues = document.querySelector(".header__2ZIe > p:nth-child(3) > strong").innerText;
-		totalQues = Number(totalQues.split("/")[1]);
-		console.log(tag+" "+totalQues);
+	// tbody > tr
+	let rowSelector = "tbody>tr";
+	await page.waitForSelector(rowSelector, {visible:true});
+	
+	
+	let consoleFn = (rowSelector) => {
+		
+		
+		let arrQuestions = document.querySelectorAll(rowSelector);
+		let arrLinks = document.querySelectorAll("tbody>tr>td>div>a");
+		let detailsArr = [];
+		for(let i =0;i<arrQuestions.length;i++){
+			let quesDetails = arrQuestions[i].innerText;
+			let quesArr = quesDetails.split("\t");
+			let qnum = quesArr[1];
+			let qname = quesArr[2].split("\n")[1];
+			let acceptRate = quesArr[3];
+			let qdiff = quesArr[4];
+
+			let qlink = arrLinks[i].href;
+
+			detailsArr.push({
+				Number : qnum,
+				Name: qname,
+				Acceptance_Rate: acceptRate,
+				Difficulty: qdiff,
+				Link: qlink
+			})
+		}
+		return detailsArr;
 	}
 
-	await page.evaluate(consoleFn,tag);
-	 
-	return 10;
+	return await page.evaluate(consoleFn,rowSelector);
 }

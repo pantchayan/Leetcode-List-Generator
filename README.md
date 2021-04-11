@@ -17,8 +17,10 @@ A xlsx (csv) file will be generated in **res folder** with details like each que
 4. Difficulty
 5. Link
 
-## Dependecies 
+## Dependecies / Technologies
+![JavaScript](https://img.shields.io/badge/-JavaScript-black?style=flat-square&logo=javascript)
+![Nodejs](https://img.shields.io/badge/-Nodejs-black?style=flat-square&logo=Node.js)
 Node.js modules:
-### Puppeteer
-### xlsx 
-### fs
+Puppeteer
+xlsx 
+fs

@@ -1,7 +1,17 @@
 let xlsx =require("xlsx");
 
+let count = 0;
+
 let writeData = (data, filePath, name) => {
-       let file = xlsx.readFile(filePath);
+       let file;
+       if(count == 0){
+              file =  xlsx.utils.book_new();
+              count++;
+       }
+       else{
+              file = xlsx.readFile(filePath);
+       }
+       
        
        let newSheet = xlsx.utils.json_to_sheet(data);
 

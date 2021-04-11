@@ -1,6 +1,6 @@
 let puppeteer = require("puppeteer");
 let fs = require("fs");
-let writeToExcel = require("./writeToExcel");
+let ExcelWriter = require("./ExcelWriter");
 
 let data = fs.readFileSync("./res/tags.txt");
 data = data + "";
@@ -28,7 +28,7 @@ console.log(tagArr);
 			let questionsArr = await getQuestions(page, link, tag);
 			console.log(tag+" "+questionsArr.length);
 			console.table(questionsArr);
-			writeToExcel.writeData(questionsArr, "./res/questions.xlsx", tag);
+			ExcelWriter.writeData(questionsArr, "./res/questions.xlsx", tag);
 		}
 	}
 	catch (err){
